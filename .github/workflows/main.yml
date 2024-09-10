@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v3
@@ -20,15 +20,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pandas nselib google-api-python-client google-auth-httplib2 google-auth-oauthlib google-auth
+          pip install pandas nselib google-api-python-client google-auth-httplib2 google-auth-oauthlib github  # Add other dependencies if needed
 
       - name: Run script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python see.py
-
-      - name: Upload results
-        uses: actions/upload-artifact@v3
-        with:
-          name: stock-data
-          path: |
-            stock_data.csv
