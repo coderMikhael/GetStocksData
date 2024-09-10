@@ -27,7 +27,6 @@ jobs:
           pip install google-auth-httplib2==0.2.0
           pip install google-auth-oauthlib==1.2.1
           pip install github==1.2.7
-          pip install aiohttp==3.8.1
           pip install pyasn1-modules==0.4.1
           pip install pyasn1==0.6.1
 
