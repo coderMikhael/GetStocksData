@@ -4,13 +4,11 @@ from nselib import capital_market
 from datetime import date
 from dateutil.relativedelta import relativedelta
 import warnings
-import requests 
-
-
-#***********************************************************************
+import requests
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
+import os
 
 # Path to your service account credentials file
 SERVICE_ACCOUNT_FILE = 'gdrive.json'
@@ -44,18 +42,14 @@ def upload_to_google_drive(file_path):
     print(f'File uploaded successfully. File ID: {file_id}')
 
 
-
-#***********************************************************************
 warnings.filterwarnings('ignore')
 GIST_URL = "https://gist.githubusercontent.com/coderMikhael/e170ce9f636b0926206ea66245fa3ebc/raw/841160a56d36de5f3a69d84837e4f8c7437330f9/symbol_list.txt"
-
 
 def fetch_symbol_list():
     response = requests.get(GIST_URL)
     response.raise_for_status()
     symbol_list = response.text.strip().split('\n')
     return symbol_list
-
 
 def fetchStockData(symbol):
     nse = NseIndia.NSE()
@@ -102,10 +96,8 @@ def fetchStockData(symbol):
     print(f"Done with {symbol}.")
     return stockData
 
-
 def save_stock_data(symbol_list):
     stock_data_list = []
-
     for symbol in symbol_list:
         data = fetchStockData(symbol)
         stock_data_list.append(data)
@@ -115,12 +107,12 @@ def save_stock_data(symbol_list):
     df_sorted.to_csv('stock_data.csv', index=False)
     print("All data saved, sorted by P/E, and duplicates removed in stock_data.csv")
 
-
 def main():
     symbol_list = fetch_symbol_list()
     save_stock_data(symbol_list)
+    
+    # Upload stock data CSV file to Google Drive
     upload_to_google_drive('stock_data.csv')
-
 
 if __name__ == "__main__":
     main()
