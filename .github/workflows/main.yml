@@ -22,7 +22,7 @@ jobs:
         run: |
           pip install pandas requests
           pip install nselib
-          pip install PyGithub# Install other dependencies as required
+          pip install PyGithub # Install other dependencies as required
 
       - name: Run Stock Data Script
         run: |
