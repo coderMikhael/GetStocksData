@@ -24,7 +24,7 @@ jobs:
 
       - name: Run script
         run: |
-          python stocksdata.py
+          python see.py
         
       - name: Upload results
         uses: actions/upload-artifact@v3
