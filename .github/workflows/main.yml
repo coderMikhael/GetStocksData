@@ -16,7 +16,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12'  # Adjust as needed
+          python-version: '3.11'  # Adjust as needed
 
       - name: Install dependencies
         run: |
@@ -26,6 +26,7 @@ jobs:
           pip install google-api-python-client==2.145.0
           pip install google-auth-httplib2==0.2.0
           pip install google-auth-oauthlib==1.2.1
+          pip install aiohttp
           pip install github==1.2.7
           pip install pyasn1-modules==0.4.1
           pip install pyasn1==0.6.1
