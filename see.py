@@ -5,42 +5,53 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 import warnings
 import requests
+from github import Github
+
+# GitHub token for authentication
+GITHUB_TOKEN = "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"
+
+# Authenticate with GitHub
+g = Github(GITHUB_TOKEN)
+repo = g.get_repo("coderMikhael/GetStocksData")  # Replace with your repo
+
+# Google Drive Upload code
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
-import os
 
-# Path to your service account credentials file
 SERVICE_ACCOUNT_FILE = 'gdrive.json'
-
-# Scopes required for Google Drive API
 SCOPES = ['https://www.googleapis.com/auth/drive.file']
-
-# Authenticate and build the Google Drive service
 credentials = service_account.Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 service = build('drive', 'v3', credentials=credentials)
 
 def upload_to_google_drive(file_path):
-    # Define file metadata
     file_metadata = {
-        'name': 'stock_data.csv'  # You can change this to the desired file name
+        'name': 'stock_data.csv'
     }
-    
-    # Define media file upload
     media = MediaFileUpload(file_path, mimetype='text/csv')
-    
-    # Upload the file
     request = service.files().create(
         body=file_metadata,
         media_body=media,
         fields='id'
     )
-    
     response = request.execute()
     file_id = response.get('id')
     print(f'File uploaded successfully. File ID: {file_id}')
 
+# Commit file to GitHub
+def commit_to_github(file_path):
+    with open(file_path, 'r') as file:
+        content = file.read()
+    
+    # Create a new file or update an existing file in the repo
+    repo.create_file(
+        path='stock_data.csv',
+        message='Add stock data CSV',
+        content=content,
+        branch='main'  # or 'master', depending on your default branch
+    )
+    print('File committed to GitHub.')
 
 warnings.filterwarnings('ignore')
 GIST_URL = "https://gist.githubusercontent.com/coderMikhael/e170ce9f636b0926206ea66245fa3ebc/raw/841160a56d36de5f3a69d84837e4f8c7437330f9/symbol_list.txt"
@@ -58,8 +69,7 @@ def fetchStockData(symbol):
     start_day = start_day.strftime("%d-%m-%Y")
     end_day = end_day.strftime("%d-%m-%Y")
 
-    data = capital_market.price_volume_and_deliverable_position_data(
-        symbol, end_day, start_day)
+    data = capital_market.price_volume_and_deliverable_position_data(symbol, end_day, start_day)
     df = pd.DataFrame(data)
     vol_list = df['TotalTradedQuantity'].tail(10)
     vol_list = vol_list.str.replace(',', '').astype(float)
@@ -98,6 +108,7 @@ def fetchStockData(symbol):
 
 def save_stock_data(symbol_list):
     stock_data_list = []
+
     for symbol in symbol_list:
         data = fetchStockData(symbol)
         stock_data_list.append(data)
@@ -110,9 +121,7 @@ def save_stock_data(symbol_list):
 def main():
     symbol_list = fetch_symbol_list()
     save_stock_data(symbol_list)
-    
-    # Upload stock data CSV file to Google Drive
-    upload_to_google_drive('stock_data.csv')
+    commit_to_github('stock_data.csv')  # Commit the file to GitHub
 
 if __name__ == "__main__":
     main()
