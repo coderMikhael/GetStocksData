@@ -1,7 +1,7 @@
 name: Run Stock Data Script
 
 on:
-  workflow_dispatch:  # Allows manual triggering of the workflow
+  workflow_dispatch:
   schedule:
     - cron: '0 0 * * *'  # Runs daily at midnight UTC
 
@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2  # The correct checkout action syntax
+        uses: actions/checkout@v2
 
       - name: Set up Python
         uses: actions/setup-python@v3
@@ -20,23 +20,15 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pandas nselib google-api-python-client google-auth-httplib2 google-auth-oauthlib google-auth requests python-dateutil
-
-      - name: Create gdrive.json file from secret
-        run: |
-          printf "%s" "${{ secrets.GDRIVE_JSON }}" > gdrive.json
-        shell: bash
-
+          pip install pandas nselib google-api-python-client google-auth-httplib2 google-auth-oauthlib google-auth
 
       - name: Run script
         run: |
           python see.py
-        
-      - name: Upload results to GitHub as an artifact
+
+      - name: Upload results
         uses: actions/upload-artifact@v3
         with:
           name: stock-data
-          path: stock_data.csv
-
-      - name: Cleanup
-        run: rm -f gdrive.json
+          path: |
+            stock_data.csv
