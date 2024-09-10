@@ -24,8 +24,9 @@ jobs:
 
       - name: Create gdrive.json file from secret
         run: |
-          echo "${{ secrets.GDRIVE_JSON }}" > gdrive.json
+          printf "%s" "${{ secrets.GDRIVE_JSON }}" > gdrive.json
         shell: bash
+
 
       - name: Run script
         run: |
