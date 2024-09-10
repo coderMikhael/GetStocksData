@@ -20,7 +20,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pandas nselib  # Add other dependencies if needed
+          pip install pandas nselib google-api-python-client google-auth-httplib2 google-auth-oauthlib google-auth   # Add other dependencies if needed
 
       - name: Run script
         run: |
