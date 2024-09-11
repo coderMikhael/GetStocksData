@@ -11,7 +11,7 @@ from github import Github
 
 
 warnings.filterwarnings('ignore')
-GIST_URL = "https://gist.githubusercontent.com/coderMikhael/e170ce9f636b0926206ea66245fa3ebc/raw/cfbc2d1f7b9dc29256b820a04f2a67951268e44d/symbol_list.txt"
+GIST_URL = "https://gist.githubusercontent.com/coderMikhael/e170ce9f636b0926206ea66245fa3ebc/raw/8f1c0af1e4c90653e4f755525fda854ea320f7e3/symbol_list.txt"
 
 
 def upload_csv_to_github(repo_name, file_name, token):
@@ -35,12 +35,13 @@ def upload_csv_to_github(repo_name, file_name, token):
 def fetch_symbol_list():
     response = requests.get(GIST_URL)
     response.raise_for_status()
-    symbol_list = response.text.strip().split('\n')
-    #symbol_list = ["20MICRONS", "21STCENMGM", "360ONE", "3IINFOLTD"]
+    #symbol_list = response.text.strip().split('\n')
+    symbol_list = ["KALYANI"]
     return symbol_list
 
 
 def fetchStockData(symbol):
+    print(symbol)
     nse = NseIndia.NSE()
     start_day = date.today()
     end_day = start_day - relativedelta(months=3)
@@ -51,11 +52,29 @@ def fetchStockData(symbol):
         symbol, end_day, start_day)
     df = pd.DataFrame(data)
     vol_list = df['TotalTradedQuantity'].tail(10)
-    vol_list = vol_list.str.replace(',', '').astype(float)
+    vol_list = vol_list.astype(str).str.replace(',', '').astype(float)
+
+    #vol_list = vol_list.str.replace(',', '').astype(float)
 
     newd1 = nse.equity_info(symbol)
     newd2 = nse.equity_extra_info(symbol)
-
+    
+    if 'priceInfo' not in newd1:
+        print(f"Missing 'priceInfo' in response for {symbol}")
+        return {
+            "Symbol": symbol,
+            "LTP": 9999999,
+            "High": 9999999,
+            "Low": 9999999,
+            "PreviousClose": 9999999,
+            "Change": 9999999,
+            "Last 10D avg Volume": vol_list.mean(),
+            "Delivery %": 9999999,
+            "Symbol P/E": 9999999,
+            "3 months high": 9999999,
+            "3 months low": 9999999
+        }
+    
     ltp = newd1['priceInfo']['lastPrice']
     high = newd1['priceInfo']['intraDayHighLow']['max']
     low = newd1['priceInfo']['intraDayHighLow']['min']
@@ -68,7 +87,18 @@ def fetchStockData(symbol):
     sympe = newd2['metadata']['pdSymbolPe']
     _3monHigh = df['ClosePrice'].max()
     _3monLow = df['ClosePrice'].min()
+    def convert_to_float(value):
+        if value in ['', '-','NA']:  # Check for empty or hyphen values
+            return 0.0
+        try:
+            # Convert the value to float, handling both integers and floats
+            return float(value)
+        except ValueError:
+            
+            return 9999999.0
 
+    # Convert sympe to float using the function
+    sympe = convert_to_float(sympe)
     stockData = {
         "Symbol": symbol,
         "LTP": ltp,
@@ -95,7 +125,8 @@ def save_stock_data(symbol_list):
     df = pd.DataFrame(stock_data_list)
     df_cleaned = df.drop_duplicates(subset='Symbol', keep='first')
     df_sorted = df_cleaned.sort_values(by='Symbol P/E')
-    df_sorted.to_csv('stock_data.csv', index=False)
+    print(df_sorted)
+    #df_sorted.to_csv('stock_data.csv', index=False)
     print("All data saved, sorted by P/E, and duplicates removed in stock_data.csv")
 
 
@@ -107,5 +138,5 @@ def main():
 if __name__ == "__main__":
     main()
     print("Execution Complete.")
-    upload_csv_to_github( "coderMikhael/GetStocksData", "stock_data.csv", "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")
+    #upload_csv_to_github( "coderMikhael/GetStocksData", "stock_data.csv", "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")
     print("File uploaded to Github.")
