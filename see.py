@@ -11,24 +11,32 @@ from github import Github
 
 
 warnings.filterwarnings('ignore')
-GIST_URL = "https://gist.githubusercontent.com/coderMikhael/e170ce9f636b0926206ea66245fa3ebc/raw/841160a56d36de5f3a69d84837e4f8c7437330f9/symbol_list.txt"
+GIST_URL = "https://gist.githubusercontent.com/coderMikhael/e170ce9f636b0926206ea66245fa3ebc/raw/cfbc2d1f7b9dc29256b820a04f2a67951268e44d/symbol_list.txt"
 
 
-def upload_csv_to_github(file_path):
-    g = Github("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")
-    repo = g.get_repo("coderMikhael/GetStocksData")
-    with open(file_path, "r") as file:
-        content = file.read()
+def upload_csv_to_github(repo_name, file_name, token):
+    g = Github(token)
+    repo = g.get_repo(repo_name)
+
     try:
-        repo.create_file("stock_data.csv", "Add stock data CSV", content)
+        # Try to get the file from the repo
+        file = repo.get_contents(file_name)
+        # If file exists, delete it
+        repo.delete_file(file.path, "Delete old stock data CSV", file.sha)
     except Exception as e:
-        print(f"Error uploading file: {e}")
+        # If file does not exist, it will raise an exception, which we can ignore
+        print(f"File does not exist or error occurred: {e}")
+
+    # Now create a new file
+    repo.create_file(file_name, "Add new stock data CSV", open(file_name, "r").read())
+
 
 
 def fetch_symbol_list():
     response = requests.get(GIST_URL)
     response.raise_for_status()
-    symbol_list = response.text.strip().split('\n')
+    #symbol_list = response.text.strip().split('\n')
+    symbol_list = [20MICRONS, 21STCENMGM, 360ONE, 3IINFOLTD]
     return symbol_list
 
 
@@ -99,5 +107,5 @@ def main():
 if __name__ == "__main__":
     main()
     print("Execution Complete.")
-    upload_csv_to_github("stock_data.csv")
+    upload_csv_to_github( "coderMikhael/GetStocksData", "stock_data.csv", "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")
     print("File uploaded to Github.")
