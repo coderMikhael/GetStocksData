@@ -35,8 +35,8 @@ def upload_csv_to_github(repo_name, file_name, token):
 def fetch_symbol_list():
     response = requests.get(GIST_URL)
     response.raise_for_status()
-    #symbol_list = response.text.strip().split('\n')
-    symbol_list = ["20MICRONS", "21STCENMGM", "360ONE", "3IINFOLTD"]
+    symbol_list = response.text.strip().split('\n')
+    #symbol_list = ["20MICRONS", "21STCENMGM", "360ONE", "3IINFOLTD"]
     return symbol_list
 
 
