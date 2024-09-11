@@ -36,7 +36,7 @@ def fetch_symbol_list():
     response = requests.get(GIST_URL)
     response.raise_for_status()
     #symbol_list = response.text.strip().split('\n')
-    symbol_list = [20MICRONS, 21STCENMGM, 360ONE, 3IINFOLTD]
+    symbol_list = ["20MICRONS", "21STCENMGM", "360ONE", "3IINFOLTD"]
     return symbol_list
 
 
