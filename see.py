@@ -125,7 +125,7 @@ def save_stock_data(symbol_list):
     df_cleaned = df.drop_duplicates(subset='Symbol', keep='first')
     df_sorted = df_cleaned.sort_values(by='Symbol P/E')
     print(df_sorted)
-    #df_sorted.to_csv('stock_data.csv', index=False)
+    df_sorted.to_csv('stock_data.csv', index=False)
     print("All data saved, sorted by P/E, and duplicates removed in stock_data.csv")
 
 
@@ -137,5 +137,5 @@ def main():
 if __name__ == "__main__":
     main()
     print("Execution Complete.")
-    #upload_csv_to_github( "coderMikhael/GetStocksData", "stock_data.csv", "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")
+    upload_csv_to_github( "coderMikhael/GetStocksData", "stock_data.csv", "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")
     print("File uploaded to Github.")
