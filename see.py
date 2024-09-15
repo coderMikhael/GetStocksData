@@ -59,8 +59,9 @@ def fetchStockData(symbol):
     newd1 = nse.equity_info(symbol)
     newd2 = nse.equity_extra_info(symbol)
     
-    if any(key not in newd1 for key in ['priceInfo', 'lastPrice', 'intraDayHighLow', 'previousClose']):
-        print(f"Missing 'priceInfo' in response for {symbol}")
+    if ('priceInfo' not in newd1 or 'lastPrice' not in newd1['priceInfo'] or
+    'intraDayHighLow' not in newd1 or 'previousClose' not in newd1['intraDayHighLow']):
+        print(f"Priceinfo or maybe something within priceinfo is missing in response for {symbol}")
         return {
             "Symbol": symbol,
             "LTP": 9999999,
