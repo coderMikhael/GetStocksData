@@ -59,7 +59,9 @@ def fetchStockData(symbol):
     newd1 = nse.equity_info(symbol)
     newd2 = nse.equity_extra_info(symbol)
     
-    if 'priceInfo' not in newd1:
+    if any(key not in newd1 for key in ['priceInfo', 'lastPrice', 'intraDayHighLow', 'previousClose']):
+    # Your code here if any key is missing
+
         print(f"Missing 'priceInfo' in response for {symbol}")
         return {
             "Symbol": symbol,
@@ -138,5 +140,5 @@ def main():
 if __name__ == "__main__":
     main()
     print("Execution Complete.")
-    upload_csv_to_github( "coderMikhael/GetStocksData", "stock_data.csv", "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")
+    upload_csv_to_github( "coderMikhael/GetStocksData", "stock_data.csv", "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")
     print("File uploaded to Github.")
