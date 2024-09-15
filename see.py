@@ -6,6 +6,7 @@ from dateutil.relativedelta import relativedelta
 import warnings
 import requests 
 from github import Github
+import os
 
 
 
@@ -14,8 +15,9 @@ warnings.filterwarnings('ignore')
 GIST_URL = "https://gist.githubusercontent.com/coderMikhael/e170ce9f636b0926206ea66245fa3ebc/raw/8f1c0af1e4c90653e4f755525fda854ea320f7e3/symbol_list.txt"
 
 
-def upload_csv_to_github(repo_name, file_name, token):
-    g = Github(token)
+def upload_csv_to_github(repo_name, file_name):
+    token = os.getenv("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")
+    g = Github("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")
     repo = g.get_repo(repo_name)
 
     try:
@@ -59,8 +61,7 @@ def fetchStockData(symbol):
     newd1 = nse.equity_info(symbol)
     newd2 = nse.equity_extra_info(symbol)
     
-    if ('priceInfo' not in newd1 or 'lastPrice' not in newd1['priceInfo'] or
-    'intraDayHighLow' not in newd1 or 'previousClose' not in newd1['intraDayHighLow']):
+    if ('priceInfo' not in newd1):
         print(f"Priceinfo or maybe something within priceinfo is missing in response for {symbol}")
         return {
             "Symbol": symbol,
@@ -139,5 +140,5 @@ def main():
 if __name__ == "__main__":
     main()
     print("Execution Complete.")
-    upload_csv_to_github( "coderMikhael/GetStocksData", "stock_data.csv", "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")
+    upload_csv_to_github( "coderMikhael/GetStocksData", "stock_data.csv")
     print("File uploaded to Github.")
