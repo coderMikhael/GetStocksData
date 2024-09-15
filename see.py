@@ -70,7 +70,7 @@ def fetchStockData(symbol):
             "Low": 9999999,
             "PreviousClose": 9999999,
             "Change": 9999999,
-            "Last 10D avg Volume": vol_list.mean(),
+            "Last 10D avg Volume": 9999999,
             "Delivery %": 9999999,
             "Symbol P/E": 9999999,
             "3 months high": 9999999,
