@@ -41,7 +41,6 @@ def fetch_symbol_list():
     #symbol_list = ['20MICRONS', 'ZYDUSWELL', 'KALYAN', 'HITECH']
     return symbol_list
 
-
 def fetchStockData(symbol):
     print(symbol)
     nse = NseIndia.NSE()
@@ -50,19 +49,14 @@ def fetchStockData(symbol):
     start_day = start_day.strftime("%d-%m-%Y")
     end_day = end_day.strftime("%d-%m-%Y")
 
-    data = capital_market.price_volume_and_deliverable_position_data(
-        symbol, end_day, start_day)
-    df = pd.DataFrame(data)
-    vol_list = df['TotalTradedQuantity'].tail(10)
-    vol_list = vol_list.astype(str).str.replace(',', '').astype(float)
-
-    #vol_list = vol_list.str.replace(',', '').astype(float)
-
-    newd1 = nse.equity_info(symbol)
-    newd2 = nse.equity_extra_info(symbol)
-    
-    if ('priceInfo' not in newd1):
-        print(f"Priceinfo or maybe something within priceinfo is missing in response for {symbol}")
+    try:
+        data = capital_market.price_volume_and_deliverable_position_data(
+            symbol, end_day, start_day)
+        df = pd.DataFrame(data)
+        vol_list = df['TotalTradedQuantity'].tail(10)
+        vol_list = vol_list.astype(str).str.replace(',', '').astype(float)
+    except Exception as e:
+        print(f"Error fetching price/volume data for {symbol}: {str(e)}")
         return {
             "Symbol": symbol,
             "LTP": 9999999,
@@ -76,8 +70,12 @@ def fetchStockData(symbol):
             "3 months high": 9999999,
             "3 months low": 9999999
         }
-    if ('metadata' not in newd2):
-        print(f"Metadata or maybe something within metadata is missing in response for {symbol}")
+
+    try:
+        newd1 = nse.equity_info(symbol)
+        newd2 = nse.equity_extra_info(symbol)
+    except Exception as e:
+        print(f"Error fetching NSE data for {symbol}: {str(e)}")
         return {
             "Symbol": symbol,
             "LTP": 9999999,
@@ -91,7 +89,39 @@ def fetchStockData(symbol):
             "3 months high": 9999999,
             "3 months low": 9999999
         }
-    
+
+    if 'priceInfo' not in newd1:
+        print(f"PriceInfo missing in response for {symbol}")
+        return {
+            "Symbol": symbol,
+            "LTP": 9999999,
+            "High": 9999999,
+            "Low": 9999999,
+            "PreviousClose": 9999999,
+            "Change": 9999999,
+            "Last 10D avg Volume": 9999999,
+            "Delivery %": 9999999,
+            "Symbol P/E": 9999999,
+            "3 months high": 9999999,
+            "3 months low": 9999999
+        }
+
+    if 'metadata' not in newd2:
+        print(f"Metadata missing in response for {symbol}")
+        return {
+            "Symbol": symbol,
+            "LTP": 9999999,
+            "High": 9999999,
+            "Low": 9999999,
+            "PreviousClose": 9999999,
+            "Change": 9999999,
+            "Last 10D avg Volume": 9999999,
+            "Delivery %": 9999999,
+            "Symbol P/E": 9999999,
+            "3 months high": 9999999,
+            "3 months low": 9999999
+        }
+
     ltp = newd1['priceInfo']['lastPrice']
     high = newd1['priceInfo']['intraDayHighLow']['max']
     low = newd1['priceInfo']['intraDayHighLow']['min']
@@ -104,18 +134,17 @@ def fetchStockData(symbol):
     sympe = newd2['metadata']['pdSymbolPe']
     _3monHigh = df['ClosePrice'].max()
     _3monLow = df['ClosePrice'].min()
+
     def convert_to_float(value):
-        if value in ['', '-','NA']:  # Check for empty or hyphen values
+        if value in ['', '-', 'NA']:  # Check for empty, hyphen, or 'NA' values
             return 0.0
         try:
-            # Convert the value to float, handling both integers and floats
             return float(value)
         except ValueError:
-            
             return 9999999.0
 
-    # Convert sympe to float using the function
     sympe = convert_to_float(sympe)
+
     stockData = {
         "Symbol": symbol,
         "LTP": ltp,
@@ -129,6 +158,7 @@ def fetchStockData(symbol):
         "3 months high": _3monHigh,
         "3 months low": _3monLow
     }
+
     print(f"Done with {symbol}.")
     return stockData
 
