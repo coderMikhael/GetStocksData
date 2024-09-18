@@ -77,7 +77,7 @@ def fetchStockData(symbol):
             "3 months low": 9999999
         }
     if ('metadata' not in newd2):
-        print(f"Priceinfo or maybe something within priceinfo is missing in response for {symbol}")
+        print(f"Metadata or maybe something within metadata is missing in response for {symbol}")
         return {
             "Symbol": symbol,
             "LTP": 9999999,
