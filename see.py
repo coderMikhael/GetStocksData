@@ -76,6 +76,21 @@ def fetchStockData(symbol):
             "3 months high": 9999999,
             "3 months low": 9999999
         }
+    if ('metadata' not in newd2):
+        print(f"Priceinfo or maybe something within priceinfo is missing in response for {symbol}")
+        return {
+            "Symbol": symbol,
+            "LTP": 9999999,
+            "High": 9999999,
+            "Low": 9999999,
+            "PreviousClose": 9999999,
+            "Change": 9999999,
+            "Last 10D avg Volume": 9999999,
+            "Delivery %": 9999999,
+            "Symbol P/E": 9999999,
+            "3 months high": 9999999,
+            "3 months low": 9999999
+        }
     
     ltp = newd1['priceInfo']['lastPrice']
     high = newd1['priceInfo']['intraDayHighLow']['max']
