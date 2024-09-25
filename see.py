@@ -16,7 +16,7 @@ GIST_URL = "https://gist.githubusercontent.com/coderMikhael/e170ce9f636b0926206e
 
 
 def upload_csv_to_github(repo_name, file_name):
-    token = os.getenv("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")
+    token = os.getenv("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")
     g = Github("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")
     repo = g.get_repo(repo_name)
 
