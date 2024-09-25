@@ -16,22 +16,31 @@ GIST_URL = "https://gist.githubusercontent.com/coderMikhael/e170ce9f636b0926206e
 
 
 def upload_csv_to_github():
-    token_sep25 = "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"
-    g = Github(token_sep25)
-    repo = g.get_repo("coderMikhael/GetStocksData")
-    file_name= "stock_data.csv"
+    # Load environment variable
+    token = os.getenv("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")
+    if not token:
+        raise ValueError("GitHub Personal Access Token not found in environment variables.")
+
+    g = Github(token)
+    repo_name = "coderMikhael/GetStocksData"
+    file_name = "stock_data.csv"  # Adjust if necessary (e.g., "data/stock_data.csv")
+    repo = g.get_repo(repo_name)
+
+    # Read the content of the new CSV file
+    with open(file_name, "r") as file:
+        content = file.read()
 
     try:
         # Try to get the file from the repo
-        file = repo.get_contents(file_name)
-        # If file exists, delete it
-        repo.delete_file(file.path, "Delete old stock data CSV", file.sha)
+        existing_file = repo.get_contents(file_name)
+        # Update the existing file
+        repo.update_file(existing_file.path, "Update stock data CSV", content, existing_file.sha)
+        print(f"Successfully updated {file_name} in {repo_name}.")
     except Exception as e:
-        # If file does not exist, it will raise an exception, which we can ignore
-        print(f"File does not exist or error occurred: {e}")
+        # If the file does not exist, create a new one
+        repo.create_file(file_name, "Add new stock data CSV", content)
+        print(f"Successfully created {file_name} in {repo_name}.")
 
-    # Now create a new file
-    repo.create_file(file_name, "Add new stock data CSV", open(file_name, "r").read())
 
 
 
