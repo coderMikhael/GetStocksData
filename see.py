@@ -16,9 +16,10 @@ GIST_URL = "https://gist.githubusercontent.com/coderMikhael/e170ce9f636b0926206e
 
 
 def upload_csv_to_github(repo_name, file_name):
-    token = os.getenv("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")
-    g = Github("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")
-    repo = g.get_repo(repo_name)
+    token_sep25 = "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"
+    g = Github(token_sep25)
+    repo = g.get_repo("coderMikhael/GetStocksData")
+    file_name= "stock_data.csv"
 
     try:
         # Try to get the file from the repo
@@ -156,5 +157,5 @@ def main():
 if __name__ == "__main__":
     main()
     print("Execution Complete.")
-    upload_csv_to_github( "coderMikhael/GetStocksData", "stock_data.csv")
+    upload_csv_to_github()
     print("File uploaded to Github.")
