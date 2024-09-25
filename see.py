@@ -15,7 +15,7 @@ warnings.filterwarnings('ignore')
 GIST_URL = "https://gist.githubusercontent.com/coderMikhael/e170ce9f636b0926206ea66245fa3ebc/raw/8f1c0af1e4c90653e4f755525fda854ea320f7e3/symbol_list.txt"
 
 
-def upload_csv_to_github(repo_name, file_name):
+def upload_csv_to_github():
     token_sep25 = "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"
     g = Github(token_sep25)
     repo = g.get_repo("coderMikhael/GetStocksData")
