@@ -17,7 +17,7 @@ GIST_URL = "https://gist.githubusercontent.com/coderMikhael/e170ce9f636b0926206e
 
 def upload_csv_to_github():
     # Load environment variable
-    token = os.getenv("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")
+    token = os.getenv("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")
     if not token:
         raise ValueError("GitHub Personal Access Token not found in environment variables.")
 
