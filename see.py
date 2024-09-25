@@ -16,7 +16,7 @@ GIST_URL = "https://gist.githubusercontent.com/coderMikhael/e170ce9f636b0926206e
 
 
 def upload_csv_to_github():
-    token_sep25 = "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"
+    token_sep25 = "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"
     g = Github(token_sep25)
     repo = g.get_repo("coderMikhael/GetStocksData")
     file_name= "stock_data.csv"
