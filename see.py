@@ -17,7 +17,7 @@ GIST_URL = "https://gist.githubusercontent.com/coderMikhael/e170ce9f636b0926206e
 
 def upload_csv_to_github(repo_name, file_name):
     token = os.getenv("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")
-    g = Github("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")
+    g = Github("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")
     repo = g.get_repo(repo_name)
 
     try:
@@ -38,7 +38,7 @@ def fetch_symbol_list():
     response = requests.get(GIST_URL)
     response.raise_for_status()
     symbol_list = response.text.strip().split('\n')
-    symbol_list = ['20MICRONS', 'ZYDUSWELL', 'KALYAN', 'HITECH']
+    #symbol_list = ['20MICRONS', 'ZYDUSWELL', 'KALYAN', 'HITECH']
     return symbol_list
 
 def fetchStockData(symbol):
